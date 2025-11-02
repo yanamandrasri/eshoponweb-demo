@@ -29,8 +29,8 @@ jobs:
         run: dotnet build eShopOnWeb.sln --configuration Release --no-restore
 
       - name: Publish the app
-        run: dotnet publish eShopOnWeb.sln -c Release -o ./publish
-      
+        run: dotnet publish ./src/Web/Web.csproj -c Release -o ./publish
+        
       - name: Azure Login
         uses: azure/login@v2
         with:
