@@ -1,0 +1,44 @@
+name: Deploying the website to azure app service
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+  workflow_dispatch:
+
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: check out from repo
+        uses: actions/checkout@v4
+      
+      - name: setup .NET in the machine
+        uses: actions/setup-dotnet@v4
+        with: 
+          dotnet-version: '8.0.x' 
+      
+      - name: Restore Dependencies
+        run: dotnet restore eShopOnWeb.sln
+
+      - name: Build the app
+        run: dotnet build eShopOnWeb.sln --configuration Release --no-restore
+
+      - name: Publish the app
+        run: dotnet publish eShopOnWeb.sln -c Release -o ./publish
+      
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+      
+      - name: Deploy to Azure Web App
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: 'eshoponweb-demo-app'
+          package: ./publish
+
