@@ -30,6 +30,7 @@ jobs:
 
       - name: Publish the app
         run: dotnet publish ./src/Web/Web.csproj -c Release -o ./publish
+
         
       - name: Azure Login
         uses: azure/login@v2
